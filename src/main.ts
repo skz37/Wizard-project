@@ -1,4 +1,5 @@
 import { WizardController } from "./controllers/wizard-controller.js";
+import { Cache } from "./decorators.js";
 import { InMemoryWizardRepository, SpellRepository } from "./repository.js";
 import {
   IncrementalWizardIdGenerator,
@@ -8,6 +9,16 @@ import type { NewWizard, SpellCastEvent } from "./types.js";
 
 function handleSpellCast(event: SpellCastEvent): void {
   console.log(`Le sorcier ${event.wizardId} lance ${event.spellName}.`);
+}
+
+class SpellCalculator {
+  calculationCount = 0;
+
+  @Cache
+  calculatePower(basePower: number, multiplier: number): number {
+    this.calculationCount += 1;
+    return basePower * multiplier;
+  }
 }
 
 const repository = new InMemoryWizardRepository();
@@ -76,3 +87,27 @@ try {
 }
 
 console.log("Exercice 4 validé : la puissance négative est refusée.");
+
+// Test de l'exercice 5 : les mêmes arguments sont calculés une seule fois par instance.
+const calculator = new SpellCalculator();
+const firstResult = calculator.calculatePower(10, 3);
+const cachedResult = calculator.calculatePower(10, 3);
+const secondResult = calculator.calculatePower(5, 2);
+
+if (
+  firstResult !== 30 ||
+  cachedResult !== 30 ||
+  secondResult !== 10 ||
+  calculator.calculationCount !== 2
+) {
+  throw new Error("Le cache ne retourne pas les résultats attendus.");
+}
+
+const anotherCalculator = new SpellCalculator();
+anotherCalculator.calculatePower(10, 3);
+
+if (anotherCalculator.calculationCount !== 1) {
+  throw new Error("Le cache doit être indépendant pour chaque instance.");
+}
+
+console.log("Exercice 5 validé : le cache est séparé par instance.");
