@@ -4,7 +4,11 @@ import {
   IncrementalWizardIdGenerator,
   WizardService,
 } from "./services/wizard-service.js";
-import type { NewWizard } from "./types.js";
+import type { NewWizard, SpellCastEvent } from "./types.js";
+
+function handleSpellCast(event: SpellCastEvent): void {
+  console.log(`Le sorcier ${event.wizardId} lance ${event.spellName}.`);
+}
 
 const repository = new InMemoryWizardRepository();
 const service = new WizardService(repository, new IncrementalWizardIdGenerator());
@@ -46,3 +50,10 @@ if (gryffindors.length !== 2 || gryffindors.some((wizard) => wizard.house !== "G
 }
 
 console.log("Exercices 1 et 2 validés :", gryffindors);
+
+// Test de l'exercice 3 : le gestionnaire n'accepte que les événements de sort.
+handleSpellCast({
+  type: "spell-cast",
+  wizardId: 1,
+  spellName: "Expelliarmus",
+});
