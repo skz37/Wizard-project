@@ -1,5 +1,5 @@
 import { WizardController } from "./controllers/wizard-controller.js";
-import { InMemoryWizardRepository } from "./repository.js";
+import { InMemoryWizardRepository, SpellRepository } from "./repository.js";
 import {
   IncrementalWizardIdGenerator,
   WizardService,
@@ -57,3 +57,22 @@ handleSpellCast({
   wizardId: 1,
   spellName: "Expelliarmus",
 });
+
+// Test de l'exercice 4 : un sort valide est conservé, un sort négatif est refusé.
+const spells = new SpellRepository();
+spells.add({ id: 102, name: "Protego", category: "defense", power: 50 });
+
+if (spells.findById(102)?.power !== 50) {
+  throw new Error("Le sort valide n'a pas été enregistré.");
+}
+
+try {
+  spells.add({ id: 103, name: "Sort invalide", category: "attack", power: -10 });
+  throw new Error("Le sort à puissance négative aurait dû être refusé.");
+} catch (error) {
+  if (!(error instanceof Error) || error.message !== "La puissance d'un sort ne peut pas être négative.") {
+    throw error;
+  }
+}
+
+console.log("Exercice 4 validé : la puissance négative est refusée.");

@@ -17,3 +17,10 @@ export type AcademyEvent =
 
 export type SpellCastEvent = Extract<AcademyEvent, { type: "spell-cast" }>;
 
+export interface Spell {
+  id: number;
+  name: string;
+  category: string;
+  power: number;
+}
+
