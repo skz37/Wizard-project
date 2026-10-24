@@ -1,10 +1,11 @@
 export type House = "Gryffindor" | "Slytherin" | "Ravenclaw" | "Hufflepuff";
 
 export interface Wizard {
-  id: string;
+  id: number;
   name: string;
   house: House;
-  age: number;
+  level: number;
+  active: boolean;
 }
 
 // L'identifiant est une responsabilité de l'application, pas de l'appelant.

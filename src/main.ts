@@ -1,5 +1,6 @@
 import { WizardController } from "./controllers/wizard-controller.js";
 import { Cache } from "./decorators.js";
+import { isWizard } from "./guards.js";
 import { InMemoryWizardRepository, SpellRepository } from "./repository.js";
 import {
   IncrementalWizardIdGenerator,
@@ -29,12 +30,13 @@ const controller = new WizardController(service);
 const harry: NewWizard = {
   name: "Harry Potter",
   house: "Gryffindor",
-  age: 11,
+  level: 5,
+  active: true,
 };
 
 const registeredWizard = controller.register(harry);
 
-if (registeredWizard.id !== "wizard-1") {
+if (registeredWizard.id !== 1) {
   throw new Error("Wizard id was not assigned by the application.");
 }
 
@@ -46,12 +48,14 @@ if (repository.findById(registeredWizard.id)?.name !== harry.name) {
 controller.register({
   name: "Hermione Granger",
   house: "Gryffindor",
-  age: 11,
+  level: 5,
+  active: true,
 });
 controller.register({
   name: "Draco Malfoy",
   house: "Slytherin",
-  age: 11,
+  level: 5,
+  active: true,
 });
 
 const gryffindors = repository.findByHouse("Gryffindor");
@@ -111,3 +115,25 @@ if (anotherCalculator.calculationCount !== 1) {
 }
 
 console.log("Exercice 5 validé : le cache est séparé par instance.");
+
+// Test de l'exercice 6 : une maison inconnue ne peut pas valider un sorcier.
+const validData: unknown = {
+  id: 4,
+  name: "Harry Potter",
+  house: "Gryffindor",
+  level: 5,
+  active: true,
+};
+const invalidData: unknown = {
+  id: 5,
+  name: "Viktor Krum",
+  house: "Durmstrang",
+  level: 5,
+  active: true,
+};
+
+if (!isWizard(validData) || isWizard(invalidData)) {
+  throw new Error("Le type guard des maisons ne valide pas correctement les données.");
+}
+
+console.log("Exercice 6 validé : seules les maisons autorisées sont acceptées.");

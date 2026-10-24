@@ -19,13 +19,13 @@ export class Repository<T extends { id: string | number }> {
 
 export interface WizardRepositoryPort {
   add(wizard: Wizard): void;
-  findById(id: string): Wizard | undefined;
+  findById(id: Wizard["id"]): Wizard | undefined;
   findByHouse(house: Wizard["house"]): Wizard[];
 }
 
 /** Repository en mémoire, interchangeable avec une implémentation base de données. */
 export class InMemoryWizardRepository implements WizardRepositoryPort {
-  private readonly wizards = new Map<string, Wizard>();
+  private readonly wizards = new Map<Wizard["id"], Wizard>();
 
   add(wizard: Wizard): void {
     if (this.wizards.has(wizard.id)) {
@@ -35,7 +35,7 @@ export class InMemoryWizardRepository implements WizardRepositoryPort {
     this.wizards.set(wizard.id, wizard);
   }
 
-  findById(id: string): Wizard | undefined {
+  findById(id: Wizard["id"]): Wizard | undefined {
     return this.wizards.get(id);
   }
 

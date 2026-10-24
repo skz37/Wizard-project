@@ -2,15 +2,15 @@ import type { WizardRepositoryPort } from "../repository.js";
 import type { NewWizard, Wizard } from "../types.js";
 
 export interface WizardIdGenerator {
-  next(): string;
+  next(): number;
 }
 
 export class IncrementalWizardIdGenerator implements WizardIdGenerator {
   private sequence = 0;
 
-  next(): string {
+  next(): number {
     this.sequence += 1;
-    return `wizard-${this.sequence}`;
+    return this.sequence;
   }
 }
 
