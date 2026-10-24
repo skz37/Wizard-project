@@ -27,4 +27,22 @@ if (repository.findById(registeredWizard.id)?.name !== harry.name) {
   throw new Error("Wizard was not persisted.");
 }
 
-console.log("Exercise 1 passed:", registeredWizard);
+// Test de l'exercice 2 : seuls les sorciers de la maison demandée sont retournés.
+controller.register({
+  name: "Hermione Granger",
+  house: "Gryffindor",
+  age: 11,
+});
+controller.register({
+  name: "Draco Malfoy",
+  house: "Slytherin",
+  age: 11,
+});
+
+const gryffindors = repository.findByHouse("Gryffindor");
+
+if (gryffindors.length !== 2 || gryffindors.some((wizard) => wizard.house !== "Gryffindor")) {
+  throw new Error("Le filtrage par maison ne retourne pas le résultat attendu.");
+}
+
+console.log("Exercices 1 et 2 validés :", gryffindors);
